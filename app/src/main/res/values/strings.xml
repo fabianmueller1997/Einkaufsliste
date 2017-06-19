@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Einkaufsliste</string>
+    <string name="add">Hinzufügen</string>
+    <string name="delete">Ausgewählte löschen</string>
 </resources>
