@@ -4,9 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,12 +17,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
-    Button add;
+    ImageButton add;
     ArrayList<String> addArray = new ArrayList<>();
     EditText txt;
     ListView lv;
     ArrayAdapter<String> adapter;
     Button delete;
+    CheckBox selectAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -28,15 +32,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         txt = (EditText)findViewById(R.id.textInput);
+        selectAll = (CheckBox) findViewById(R.id.checkboxSelect);
         lv = (ListView)findViewById(R.id.listView);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         delete = (Button)findViewById(R.id.buttonDelete);
         adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, addArray);
         lv.setAdapter(adapter);
-        add = (Button)findViewById(R.id.buttonAdd);
+        final SparseBooleanArray checkedPositions = lv.getCheckedItemPositions();
+        add = (ImageButton)findViewById(R.id.buttonAdd);
         add.setOnClickListener(new View.OnClickListener()
         {
-            @Override
+            @ Override
             public void onClick(View view)
             {
                 String getInput = txt.getText().toString();
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity
                     lv.setAdapter(adapter);
                     ((EditText) findViewById(R.id.textInput)).setText("");
                     adapter.notifyDataSetChanged();
+                    selectAll.setChecked(false);
                 }
             }
         });
@@ -76,10 +83,40 @@ public class MainActivity extends AppCompatActivity
                     }
                     checkedPositions.clear();
                     lv.invalidateViews();
+                    selectAll.setChecked(false);
                 }
                 else
                 {
                     Toast.makeText(getBaseContext(), "Keine Auswahl!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        selectAll.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                for (int i = 0; i < lv.getCount(); i++)
+                {
+                    checkedPositions.put(i, selectAll.isChecked());
+                }
+                lv.invalidateViews();
+            }
+        });
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (lv.getCheckedItemCount() == lv.getCount())
+                {
+                    selectAll.setChecked(true);
+                }
+                else
+                {
+                    selectAll.setChecked(false);
                 }
             }
         });
