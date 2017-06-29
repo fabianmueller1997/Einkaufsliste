@@ -31,18 +31,26 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        txt = (EditText)findViewById(R.id.textInput);
+        txt = (EditText) findViewById(R.id.textInput);
         selectAll = (CheckBox) findViewById(R.id.checkboxSelect);
-        lv = (ListView)findViewById(R.id.listView);
+        lv = (ListView) findViewById(R.id.listView);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        delete = (Button)findViewById(R.id.buttonDelete);
+        delete = (Button) findViewById(R.id.buttonDelete);
         adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, addArray);
         lv.setAdapter(adapter);
-        final SparseBooleanArray checkedPositions = lv.getCheckedItemPositions();
-        add = (ImageButton)findViewById(R.id.buttonAdd);
+        add = (ImageButton) findViewById(R.id.buttonAdd);
+
+        add();
+        delete();
+        selectAll();
+        check();
+    }
+
+    public void add()
+    {
         add.setOnClickListener(new View.OnClickListener()
         {
-            @ Override
+            @Override
             public void onClick(View view)
             {
                 String getInput = txt.getText().toString();
@@ -63,7 +71,10 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+    }
 
+    public void delete()
+    {
         delete.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -84,19 +95,22 @@ public class MainActivity extends AppCompatActivity
                     checkedPositions.clear();
                     lv.invalidateViews();
                     selectAll.setChecked(false);
-                }
-                else
+                } else
                 {
                     Toast.makeText(getBaseContext(), "Keine Auswahl!", Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
 
+    public void selectAll()
+    {
         selectAll.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                final SparseBooleanArray checkedPositions = lv.getCheckedItemPositions();
                 for (int i = 0; i < lv.getCount(); i++)
                 {
                     checkedPositions.put(i, selectAll.isChecked());
@@ -104,7 +118,10 @@ public class MainActivity extends AppCompatActivity
                 lv.invalidateViews();
             }
         });
+    }
 
+    public void check()
+    {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
